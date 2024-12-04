@@ -4,8 +4,8 @@ import { getSupabaseServerClient } from "~/supabase/supabase.server"
 export async function loader({ request }: LoaderFunctionArgs) {
 	const requestUrl = new URL(request.url)
 	const code = requestUrl.searchParams.get("code")
-	const headers = new Headers()
-	const { supabase } = getSupabaseServerClient(request, headers)
+	const headersToSet = new Headers()
+	const { supabase, headers } = getSupabaseServerClient(request, headersToSet)
 
 	if (!code) {
 		return redirect("/login")
@@ -16,5 +16,5 @@ export async function loader({ request }: LoaderFunctionArgs) {
 		return redirect("/login")
 	}
 
-	throw redirect("/dashboard")
+	throw redirect("/dashboard", { headers })
 }
