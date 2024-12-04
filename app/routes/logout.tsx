@@ -1,25 +1,16 @@
 import { type ActionFunctionArgs, redirect } from "react-router"
 import { getSupabaseServerClient } from "~/supabase/supabase.server"
-export const loader = () => redirect("/login")
 
 export const action = async ({ request }: ActionFunctionArgs) => {
 	const headersToSet = new Headers()
 	const { supabase, headers } = getSupabaseServerClient(request, headersToSet)
-	const { data, error } = await supabase.auth.signInWithOAuth({
-		provider: "github",
-		options: {
-			redirectTo: "http://localhost:4280/auth/github/callback",
-		},
-	})
-
+	const { error } = await supabase.auth.signOut()
 
 	if (error) {
-		return redirect("/login")
+		return { error: error.message }
 	}
 
-	if (data.url) {
-		throw redirect(data.url, { headers })
-	}
-
-	return redirect("/login")
+	return redirect("/login", {
+		headers,
+	})
 }

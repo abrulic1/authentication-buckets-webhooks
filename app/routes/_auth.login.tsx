@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Github, Mail, SmartphoneNfc } from "lucide-react"
-import { type ActionFunctionArgs, Form, Link, useNavigation, useSubmit } from "react-router"
+import { type ActionFunctionArgs, Form, Link, redirect, useNavigation, useSubmit } from "react-router"
 import { getValidatedFormData } from "remix-hook-form"
 import { Button } from "~/components/ui/button"
 import { Input } from "~/components/ui/input"
@@ -8,6 +8,7 @@ import { Label } from "~/components/ui/label"
 import { Separator } from "~/components/ui/separator"
 
 import { loginSchema } from "~/schemas/login-schema"
+import { getSupabaseServerClient } from "~/supabase/supabase.server"
 const resolver = zodResolver(loginSchema)
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -15,8 +16,23 @@ export async function action({ request }: ActionFunctionArgs) {
 	if (errors) {
 		return { errors, defaultValues }
 	}
-	//do something with the data
-	return { data }
+
+	const { email, password } = data
+	const headersToSet = new Headers()
+	const { supabase, headers } = getSupabaseServerClient(request, headersToSet)
+
+	const { error: supaError } = await supabase.auth.signInWithPassword({
+		email,
+		password,
+	})
+
+	if (supaError) {
+		return { errors: supaError }
+	}
+
+	return redirect("/dashboard", {
+		headers,
+	})
 }
 export default function Login() {
 	const navigation = useNavigation()
