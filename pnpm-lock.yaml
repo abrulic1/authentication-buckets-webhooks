@@ -17,6 +17,9 @@ importers:
       '@hookform/resolvers':
         specifier: 3.9.1
         version: 3.9.1(react-hook-form@7.53.2(react@18.3.1))
+      '@mjackson/form-data-parser':
+        specifier: 0.5.0
+        version: 0.5.0
       '@prisma/client':
         specifier: 6.0.1
         version: 6.0.1(prisma@6.0.1)
@@ -41,6 +44,9 @@ importers:
       '@supabase/ssr':
         specifier: 0.5.2
         version: 0.5.2(@supabase/supabase-js@2.46.2)
+      '@supabase/supabase-js':
+        specifier: 2.46.2
+        version: 2.46.2
       '@types/bcryptjs':
         specifier: 2.4.6
         version: 2.4.6
@@ -830,6 +836,15 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.25':
     resolution: {integrity: sha512-vNk6aEwybGtawWmy/PzwnGDOjCkLWSD2wqvjGGAgOAwCGWySYXfYoxt00IJkTF+8Lb57DwOb3Aa0o9CApepiYQ==}
+
+  '@mjackson/form-data-parser@0.5.0':
+    resolution: {integrity: sha512-rnZ1zJ4IBhPQ+FOSqQeeRA9Qqw8L1VevtEZD0thDZD4J8mOQ8UOPXaN4ppibB9yuepbvbeq1wt1kzFpbiOVg0g==}
+
+  '@mjackson/headers@0.8.0':
+    resolution: {integrity: sha512-A6nE9ZKTGX1hTHQOeoYn/f7+xRTgzixHWu9jtZ8zYgZYq30MPtZIRXqEyY8bWaIILr+zWdmUPQg/R/8e+e/8Nw==}
+
+  '@mjackson/multipart-parser@0.7.0':
+    resolution: {integrity: sha512-Nv2CZ32yGbPJVBxMNcdOCT8yJrdjsUem+Sp7YxfqIXVD184rRwOkzLA90dTmYQOa6aT/6y60JLAduh8OgJMS4g==}
 
   '@mjackson/node-fetch-server@0.2.0':
     resolution: {integrity: sha512-EMlH1e30yzmTpGLQjlFmaDAjyOeZhng1/XCd7DExR8PNAnG/G1tyruZxEoUe11ClnwGhGrtsdnyyUx1frSzjng==}
@@ -5004,6 +5019,16 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
+
+  '@mjackson/form-data-parser@0.5.0':
+    dependencies:
+      '@mjackson/multipart-parser': 0.7.0
+
+  '@mjackson/headers@0.8.0': {}
+
+  '@mjackson/multipart-parser@0.7.0':
+    dependencies:
+      '@mjackson/headers': 0.8.0
 
   '@mjackson/node-fetch-server@0.2.0': {}
 

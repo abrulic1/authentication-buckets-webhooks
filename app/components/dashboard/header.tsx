@@ -29,7 +29,7 @@ export function Header({ email }: HeaderProps) {
 							</DropdownMenuTrigger>
 							<DropdownMenuContent align="end">
 								<DropdownMenuItem>
-									<Link to="/profile" className="w-full">
+									<Link to="/account" className="w-full">
 										Profile Settings
 									</Link>
 								</DropdownMenuItem>

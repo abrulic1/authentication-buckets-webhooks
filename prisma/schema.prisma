@@ -12,12 +12,9 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-model User {
+model UserProfiles {
   id        Int      @id @default(autoincrement())
-  fullName  String
-  username  String   @unique
   email     String   @unique
-  password  String
   avatarUrl String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
