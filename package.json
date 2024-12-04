@@ -29,7 +29,10 @@
 		"postinstall": "pnpm run typegen",
 		"db:gen": "prisma generate",
 		"db:migrate": "prisma migrate dev",
-		"db:seed": "pnpm tsx prisma/seed.ts confirm"
+		"db:seed": "pnpm tsx prisma/seed.ts confirm",
+		"generate-env": "pnpm run generate-env:good-os",
+		"generate-env:good-os": "APP_DEPLOYMENT_ENV=${APP_DEPLOYMENT_ENV:=development} op inject -i .env.example -o .env",
+		"generate-env:windows": "APP_DEPLOYMENT_ENV=development op inject -i .env.example -o .env"
 	},
 	"dependencies": {
 		"-": "0.0.1",
