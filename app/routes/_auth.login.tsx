@@ -9,6 +9,7 @@ import { Separator } from "~/components/ui/separator"
 
 import { loginSchema } from "~/schemas/login-schema"
 const resolver = zodResolver(loginSchema)
+
 export async function action({ request }: ActionFunctionArgs) {
 	const { errors, data, receivedValues: defaultValues } = await getValidatedFormData<FormData>(request, resolver)
 	if (errors) {

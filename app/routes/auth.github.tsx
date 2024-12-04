@@ -1,7 +1,5 @@
 import { type ActionFunctionArgs, redirect } from "react-router"
-import { getSupabaseServerClient, refreshToken } from "~/supabase/supabase.server"
-import { getSiteUrl } from "~/utils/url.server"
-
+import { getSupabaseServerClient } from "~/supabase/supabase.server"
 export const loader = () => redirect("/login")
 
 export const action = async ({ request }: ActionFunctionArgs) => {
@@ -10,7 +8,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 	const { data, error } = await supabase.auth.signInWithOAuth({
 		provider: "github",
 		options: {
-			redirectTo: `${getSiteUrl(request)}/auth/github/callback`,
+			redirectTo: `http://localhost:4280/auth/github/callback`,
 		},
 	})
 
@@ -25,6 +23,5 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 		throw redirect(data.url)
 	}
 
-	await refreshToken(supabase, data.session)
 	return redirect("/login")
 }

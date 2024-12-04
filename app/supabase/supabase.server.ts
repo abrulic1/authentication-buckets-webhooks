@@ -15,16 +15,3 @@ export const getSupabaseServerClient = (request: Request, headers: Headers) =>
 			},
 		},
 	})
-
-export const refreshToken = async (supabase: any, previousSession: any) => {
-	const {
-		data: { session },
-		error: refreshTokenError,
-	} = await supabase.auth.refreshSession(previousSession ?? undefined)
-	if (refreshTokenError || !session) return
-
-	await supabase.auth.setSession({
-		access_token: session.access_token,
-		refresh_token: session.refresh_token,
-	})
-}
