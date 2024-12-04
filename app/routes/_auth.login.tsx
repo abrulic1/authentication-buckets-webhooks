@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Github, Mail, SmartphoneNfc } from "lucide-react"
-import { type ActionFunctionArgs, Form, Link, useNavigation } from "react-router"
+import { type ActionFunctionArgs, Form, Link, useNavigation, useSubmit } from "react-router"
 import { getValidatedFormData } from "remix-hook-form"
 import { Button } from "~/components/ui/button"
 import { Input } from "~/components/ui/input"
@@ -20,6 +20,7 @@ export async function action({ request }: ActionFunctionArgs) {
 export default function Login() {
 	const navigation = useNavigation()
 	const isSubmitting = navigation.state === "submitting"
+	const submit = useSubmit()
 	return (
 		<div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
 			<div className="max-w-md w-full space-y-8">
@@ -69,7 +70,11 @@ export default function Login() {
 							<SmartphoneNfc className="mr-2 h-4 w-4" />
 							Continue with OTP
 						</Button>
-						<Button variant="outline" className="w-full" onClick={() => {}}>
+						<Button
+							variant="outline"
+							className="w-full"
+							onClick={() => submit(null, { action: "/auth/github", method: "POST" })}
+						>
 							<Github className="mr-2 h-4 w-4" />
 							Continue with GitHub
 						</Button>

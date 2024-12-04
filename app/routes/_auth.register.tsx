@@ -1,18 +1,34 @@
 import { zodResolver } from "@hookform/resolvers/zod"
-import { type ActionFunctionArgs, Form, Link, useNavigation } from "react-router"
+import { type ActionFunctionArgs, Form, Link, redirect, useNavigation } from "react-router"
 import { getValidatedFormData } from "remix-hook-form"
 import { Button } from "~/components/ui/button"
 import { Input } from "~/components/ui/input"
 import { Label } from "~/components/ui/label"
 import { registerSchema } from "~/schemas/register-schema"
+import { getSupabaseServerClient } from "~/supabase/supabase.server"
 const resolver = zodResolver(registerSchema)
 export async function action({ request }: ActionFunctionArgs) {
 	const { errors, data, receivedValues: defaultValues } = await getValidatedFormData<FormData>(request, resolver)
 	if (errors) {
 		return { errors, defaultValues }
 	}
-	//do something with the data
-	return { data }
+
+	const { email, password } = data
+	const headers = new Headers()
+	const supabase = getSupabaseServerClient(request, headers)
+
+	const { error: supaError } = await supabase.auth.signUp({
+		email,
+		password,
+	})
+
+	if (supaError) {
+		throw supaError
+	}
+
+	return redirect("/dashboard", {
+		headers,
+	})
 }
 export default function Register() {
 	// const actionData = useActionData<typeof action>()
@@ -37,14 +53,14 @@ export default function Register() {
 				)} */}
 				<Form method="post" className="mt-8 space-y-6">
 					<div className="space-y-4 rounded-md shadow-sm">
-						<div>
+						{/* <div>
 							<Label htmlFor="fullName">Full Name</Label>
 							<Input id="fullName" name="fullName" type="text" required className="mt-1" />
-						</div>
-						<div>
+						</div> */}
+						{/* <div>
 							<Label htmlFor="username">Username</Label>
 							<Input id="username" name="username" type="text" required className="mt-1" />
-						</div>
+						</div> */}
 						<div>
 							<Label htmlFor="email">Email</Label>
 							<Input id="email" name="email" type="email" autoComplete="email" required className="mt-1" />
