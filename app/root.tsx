@@ -3,7 +3,6 @@ import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router"
 import type { LinksFunction } from "react-router"
 import { useChangeLanguage } from "remix-i18next/react"
 import type { Route } from "./+types/root"
-import { LanguageSwitcher } from "./library/language-switcher"
 import tailwindcss from "./tailwind.css?url"
 
 export async function loader({ context }: Route.LoaderArgs) {
@@ -32,7 +31,6 @@ export default function App({ loaderData }: Route.ComponentProps) {
 				<Links />
 			</head>
 			<body className="w-full h-full">
-				<LanguageSwitcher />
 				<Outlet />
 				<ScrollRestoration />
 				<Scripts />
