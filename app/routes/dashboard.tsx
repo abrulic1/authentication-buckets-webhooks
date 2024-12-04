@@ -6,7 +6,7 @@ import { WelcomeBanner } from "~/components/dashboard/welcome-banner"
 // biome-ignore lint/correctness/noUnusedVariables: <explanation>
 // biome-ignore lint/correctness/noUnusedFunctionParameters: <explanation>
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-	return null
+	return {mess: "Hello, world!"}
 }
 
 export default function Dashboard() {

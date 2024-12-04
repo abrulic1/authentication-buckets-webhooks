@@ -5,7 +5,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 	const requestUrl = new URL(request.url)
 	const code = requestUrl.searchParams.get("code")
 	const headers = new Headers()
-	const supabase = getSupabaseServerClient(request, headers)
+	const { supabase } = getSupabaseServerClient(request, headers)
 
 	if (!code) {
 		console.log("NEMA CODA")
@@ -15,7 +15,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 	const { data, error } = await supabase.auth.exchangeCodeForSession(code)
 	if (error) {
 		console.log("ERROR PRILIKOM EXCHANGEA")
-		console.log({error})
+		console.log({ error })
 		return redirect("/login")
 	}
 
@@ -40,5 +40,5 @@ export async function loader({ request }: LoaderFunctionArgs) {
 		}
 	}
 
-	throw redirect("/dashoard")
+	throw redirect("/dashboard")
 }
