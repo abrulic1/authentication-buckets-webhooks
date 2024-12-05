@@ -1,8 +1,8 @@
 import { z } from "zod"
 
 const envSchema = z.object({
-	NODE_ENV: z.enum(["development", "production", "test"]),
-	APP_DEPLOYMENT_ENV: z.enum(["staging", "production"]),
+	NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
+	APP_DEPLOYMENT_ENV: z.enum(["development", "staging", "production"]).default("development"),
 })
 
 type APP_ENV = z.infer<typeof envSchema>

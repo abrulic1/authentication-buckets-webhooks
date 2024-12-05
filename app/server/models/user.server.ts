@@ -1,4 +1,21 @@
-import type { User } from "@prisma/client"
-import bcrypt from "bcryptjs"
+import type { profiles } from "@prisma/client"
+import { db } from "~/utils/db.server"
 
-export const hashPassword = (password: User["password"]) => bcrypt.hash(password, 10)
+export const getUser = (id: profiles["id"]) =>
+	db.profiles.findFirst({
+		where: {
+			id,
+		},
+	})
+
+export const updateAvatarUrl = (id: profiles["id"], avatarUrl: string) =>
+	db.profiles.update({
+		where: { id },
+		data: { avatarUrl },
+	})
+
+export const removeAvatarUrl = (id: profiles["id"]) =>
+	db.profiles.update({
+		where: { id },
+		data: { avatarUrl: null },
+	})
