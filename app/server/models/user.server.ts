@@ -1,9 +1,21 @@
-// export const hashPassword = (password: User["password"]) => bcrypt.hash(password, 10)
+import type { profiles } from "@prisma/client"
+import { db } from "~/utils/db.server"
 
-const getUser = async (params: { userId: string }) => {
-	const { data, error } = await supabase
-		.from("users") // Replace 'users' with your table name
-		.select("*")
-		.eq("id", params.userId)
-		.single()
-}
+export const getUser = (id: profiles["id"]) =>
+	db.profiles.findFirst({
+		where: {
+			id,
+		},
+	})
+
+export const updateAvatarUrl = (id: profiles["id"], avatarUrl: string) =>
+	db.profiles.update({
+		where: { id },
+		data: { avatarUrl },
+	})
+
+export const removeAvatarUrl = (id: profiles["id"]) =>
+	db.profiles.update({
+		where: { id },
+		data: { avatarUrl: null },
+	})

@@ -20,51 +20,40 @@ export default function Account() {
 		return email?.split("@")[0].slice(0, 2).toUpperCase() || "??"
 	}
 
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-			const selectedFiles = e.target.files
-			if (selectedFiles && selectedFiles.length > 0) {
-				const avatar = selectedFiles[0]
-				const formData = new FormData()
-				formData.append("avatar", avatar)
-				// user.avatarUrl = ""
-				fetcher.submit(formData, { method: "POST", action: "/avatar/upload", encType: "multipart/form-data" })
-			}
+	const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+		const selectedFiles = e.target.files
+		if (selectedFiles && selectedFiles.length > 0) {
+			const avatar = selectedFiles[0]
+			const formData = new FormData()
+			formData.append("avatar", avatar)
+			fetcher.submit(formData, { method: "POST", action: "/avatar/upload", encType: "multipart/form-data" })
 		}
+	}
 
-	// Trigger file input click when user selects photo
 	const selectPhoto = () => {
 		if (fileInputRef.current) {
 			fileInputRef.current.click()
 		}
 	}
 
-	// Remove photo logic (if needed)
 	const removePhoto = () => {
 		fetcher.submit(null, { method: "POST", action: "/avatar/remove" })
 	}
 
 	return (
 		<div className="min-h-screen bg-gray-50">
-			{/* Header */}
 			<div className="bg-black text-white py-8">
 				<div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 					<h1 className="text-2xl font-bold">Your Profile</h1>
 					<p className="my-1 text-blue-100">Manage your profile information</p>
 				</div>
 			</div>
-
-			{/* Profile Content */}
 			<div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8">
 				<div className="bg-white rounded-lg shadow">
 					<div className="p-8">
-						{/* Profile Header */}
 						<div className="flex items-center space-x-4 mb-8">
 							<Avatar className="h-20 w-20">
-								{/* Show the avatar or fallback initials */}
-								<AvatarImage
-									src="https://images.pexels.com/photos/18111149/pexels-photo-18111149/free-photo-of-yachts-moored-in-harbor-to-jetty.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-									alt="user"
-								/>
+								<AvatarImage src={user.avatarUrl || undefined} alt="user" />
 								<AvatarFallback className="text-lg">{user.email ? getInitials(user.email) : "??"}</AvatarFallback>
 							</Avatar>
 							<div className="space-x-2">
@@ -82,10 +71,24 @@ export default function Account() {
 									/>
 									Change photo
 								</Button>
+								<Button
+									className="mt-2 bg-white text-black hover:bg-black/10"
+									onClick={removePhoto}
+									disabled={!user.avatarUrl}
+								>
+									<input
+										type="file"
+										accept="image/*"
+										ref={fileInputRef}
+										id="avatar"
+										name="avatar"
+										style={{ display: "none" }}
+										onChange={handleFileChange}
+									/>
+									Remove photo
+								</Button>
 							</div>
 						</div>
-
-						{/* Profile Form */}
 						<Form method="post" className="space-y-6">
 							<div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
 								<div>

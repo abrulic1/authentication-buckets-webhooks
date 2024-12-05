@@ -1,20 +1,22 @@
-import { zodResolver } from "@hookform/resolvers/zod"
 import { type ActionFunctionArgs, Form, Link, redirect, useNavigation } from "react-router"
-import { getValidatedFormData } from "remix-hook-form"
 import { Button } from "~/components/ui/button"
 import { Input } from "~/components/ui/input"
 import { Label } from "~/components/ui/label"
 import { registerSchema } from "~/schemas/register-schema"
 import { getSupabaseServerClient } from "~/supabase/supabase.server"
-const resolver = zodResolver(registerSchema)
+
+//TODO add loader to check if user is already logged in, in that case redirect to dashboard
 
 export async function action({ request }: ActionFunctionArgs) {
-	const { errors, data, receivedValues: defaultValues } = await getValidatedFormData<FormData>(request, resolver)
-	if (errors) {
-		return { errors, defaultValues }
+	const formData = await request.formData()
+	const data = Object.fromEntries(formData)
+	const parsedData = registerSchema.safeParse(data)
+	if (!parsedData.success) {
+		return { error: "Invalid input" }
 	}
 
-	const { email, password } = data
+	const { email, password } = parsedData.data
+
 	const headersToSet = new Headers()
 	const { supabase, headers } = getSupabaseServerClient(request, headersToSet)
 
@@ -31,6 +33,8 @@ export async function action({ request }: ActionFunctionArgs) {
 		headers,
 	})
 }
+
+//TODO show form validations
 export default function Register() {
 	const navigation = useNavigation()
 	const isSubmitting = navigation.state === "submitting"

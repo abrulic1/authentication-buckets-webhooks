@@ -1,42 +1,42 @@
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Github, Mail, SmartphoneNfc } from "lucide-react"
-import { type ActionFunctionArgs, Form, Link, redirect, useNavigation, useSubmit } from "react-router"
-import { getValidatedFormData } from "remix-hook-form"
+import { Github, SmartphoneNfc } from "lucide-react"
+import { type ActionFunctionArgs, Form, Link, redirect, useSubmit } from "react-router"
 import { Button } from "~/components/ui/button"
 import { Input } from "~/components/ui/input"
 import { Label } from "~/components/ui/label"
 import { Separator } from "~/components/ui/separator"
-
 import { loginSchema } from "~/schemas/login-schema"
 import { getSupabaseServerClient } from "~/supabase/supabase.server"
-const resolver = zodResolver(loginSchema)
+
+//TODO add loader to check if user is already logged in, in that case redirect to dashboard
 
 export async function action({ request }: ActionFunctionArgs) {
-	const { errors, data, receivedValues: defaultValues } = await getValidatedFormData<FormData>(request, resolver)
-	if (errors) {
-		return { errors, defaultValues }
+	const formData = await request.formData()
+	const data = Object.fromEntries(formData)
+	const parsedData = loginSchema.safeParse(data)
+	if (!parsedData.success) {
+		return { error: "Invalid input" }
 	}
 
-	const { email, password } = data
+	const { email, password } = parsedData.data
 	const headersToSet = new Headers()
 	const { supabase, headers } = getSupabaseServerClient(request, headersToSet)
 
-	const { error: supaError } = await supabase.auth.signInWithPassword({
+	const { error } = await supabase.auth.signInWithPassword({
 		email,
 		password,
 	})
 
-	if (supaError) {
-		return { errors: supaError }
+	if (error) {
+		return { error }
 	}
 
 	return redirect("/dashboard", {
 		headers,
 	})
 }
+
+//TODO show form validations
 export default function Login() {
-	const navigation = useNavigation()
-	const isSubmitting = navigation.state === "submitting"
 	const submit = useSubmit()
 	return (
 		<div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -50,16 +50,11 @@ export default function Login() {
 						</Link>
 					</p>
 				</div>
-				{/* {actionData?.error && (
-					<div className="bg-red-50 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-						<span className="block sm:inline">{actionData.error}</span>
-					</div>
-				)} */}
 				<Form method="POST" className="mt-8 space-y-6">
 					<div className="space-y-4 rounded-md shadow-sm">
 						<div>
 							<Label htmlFor="email">Email</Label>
-							<Input id="email" name="email" type="email" autoComplete="email" required className="mt-1" />
+							<Input id="email" type="email" autoComplete="email" className="mt-1" required name="email" />
 						</div>
 						<div>
 							<Label htmlFor="password">Password</Label>
@@ -78,29 +73,25 @@ export default function Login() {
 							Forgot your password?
 						</Link>
 					</div>
-					<Button type="submit" className="w-full" disabled={isSubmitting}>
-						{isSubmitting ? "Signing in..." : "Sign in"}
+					<Button type="submit" className="w-full">
+						Sign in
 					</Button>
-					<Separator text="or" />
-					<div className="grid gap-2">
-						<Button variant="outline" className="w-full" onClick={() => {}}>
-							<SmartphoneNfc className="mr-2 h-4 w-4" />
-							Continue with OTP
-						</Button>
-						<Button
-							variant="outline"
-							className="w-full"
-							onClick={() => submit(null, { action: "/auth/github", method: "POST" })}
-						>
-							<Github className="mr-2 h-4 w-4" />
-							Continue with GitHub
-						</Button>
-						<Button variant="outline" className="w-full" onClick={() => {}}>
-							<Mail className="mr-2 h-4 w-4" />
-							Continue with Google
-						</Button>
-					</div>
 				</Form>
+				<Separator text="or" />
+				<div className="grid gap-2">
+					<Button variant="outline" className="w-full" onClick={() => {}}>
+						<SmartphoneNfc className="mr-2 h-4 w-4" />
+						Continue with OTP
+					</Button>
+					<Button
+						variant="outline"
+						className="w-full"
+						onClick={() => submit(null, { action: "/auth/github", method: "POST" })}
+					>
+						<Github className="mr-2 h-4 w-4" />
+						Continue with GitHub
+					</Button>
+				</div>
 			</div>
 		</div>
 	)
